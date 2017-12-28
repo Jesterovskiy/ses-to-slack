@@ -1,0 +1,18 @@
+{
+  "name": "ses-to-slack",
+  "version": "1.0.0",
+  "description": "Serverless setup for forwarding AWS SES to Slack",
+  "main": "handler.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Dashkevych Oleksii",
+  "license": "MIT License",
+  "dependencies": {
+    "@slack/client": "^3.14.2",
+    "serverless": "^1.25.0"
+  },
+  "devDependencies": {
+    "aws-sdk": "^2.175.0"
+  }
+}
