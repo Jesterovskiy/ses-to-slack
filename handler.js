@@ -18,28 +18,24 @@ module.exports.handler = (event, context, callback) => {
       console.log(err, err.stack);
       callback(err);
     } else {
-      switch (message.commonHeaders.from[0]) {
-        case 'TraceView Alerts <alerts@tracelyticsmail.com>':
-          handleReceived(message.commonHeaders.subject, data.Body, callback);
-          break;
-        default:
-          callback(`Unknown email sender: ${message.from[0]}`);
+      if (message.commonHeaders.from[0].includes('alerts@tracelyticsmail.com')) {
+        handleReceived(message.commonHeaders.subject, data.Body, callback);
+      } else {
+        callback(`Unknown email sender: ${message.from[0]}`);
       }
-
-      callback(null, null);
-    }
+    };
   });
 };
 
 function handleReceived(subject, message, callback) {
-  const emailArray = ('' + message).split('\n');
+  const emailArray = String(message).split('\n');
   const appIndex = emailArray.findIndex(item => item === 'App:\r');
   let slackMessage;
 
   if (appIndex !== -1) {
-    slackMessage = subject + '\n Application: ' + emailArray[appIndex + 2].replace(/\*\*/g, '') + 'Value: ' + emailArray[appIndex + 10].replace(/\*\*/g, '');
+    slackMessage = `${subject}\n Application: ${emailArray[appIndex + 2].replace(/\*\*/g, '')} Value: ${emailArray[appIndex + 10].replace(/\*\*/g, '')}`;
   } else {
-    slackMessage = subject + '. Additional info is not available - check email template.';
+    slackMessage = `${subject}. Additional info is not available - check email template.`;
   };
 
   const webhook = new IncomingWebhook(slackHookUrl);
